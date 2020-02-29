@@ -22,9 +22,8 @@ import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.AmazonWebServiceRequest;
 import com.amazonaws.ClientConfiguration;
-import com.amazonaws.http.AmazonHttpClient;
+import com.amazonaws.http.AmazonHttpClientImpl;
 import com.amazonaws.http.ExecutionContext;
-import com.amazonaws.http.response.NullResponseHandler;
 import com.amazonaws.util.RetryTestUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -40,7 +39,7 @@ import java.util.Random;
 public class ClientConfigurationMaxErrorRetryTest extends RetryPolicyTestBase {
 
     private static final Random random = new Random();
-    private AmazonHttpClient testedClient;
+    private AmazonHttpClientImpl testedClient;
 
     @Before
     public void resetClientConfiguration() {
@@ -132,7 +131,7 @@ public class ClientConfigurationMaxErrorRetryTest extends RetryPolicyTestBase {
      * Verifies the request is actually retried for the expected times.
      */
     private void testActualRetries(int expectedRetryAttempts) {
-        testedClient = new AmazonHttpClient(clientConfiguration);
+        testedClient = new AmazonHttpClientImpl(clientConfiguration);
         injectMockHttpClient(testedClient, new ReturnServiceErrorHttpClient(500, "fake 500 service error"));
         // The ExecutionContext should collect the expected RequestCount
         ExecutionContext context = new ExecutionContext(true);

@@ -21,13 +21,13 @@ import java.util.concurrent.TimeUnit;
 import com.amazonaws.annotation.SdkInternalApi;
 import com.amazonaws.annotation.SdkTestInternalApi;
 import com.amazonaws.annotation.ThreadSafe;
-import com.amazonaws.http.AmazonHttpClient;
+import com.amazonaws.http.AmazonHttpClientImpl;
 import com.amazonaws.http.timers.TimeoutThreadPoolBuilder;
 
 /**
  * Represents a timer to enforce a timeout on the total client execution time. That is the time
  * spent executing request handlers, any HTTP request including retries, unmarshalling, etc.
- * Essentially all the time spent in {@link AmazonHttpClient}
+ * Essentially all the time spent in {@link AmazonHttpClientImpl}
  */
 // DO NOT override finalize(). The shutdown() method is called from AmazonHttpClient#shutdown()
 // which is called from it's finalize() method.  Since finalize methods can be be called in any
@@ -80,7 +80,7 @@ public class ClientExecutionTimer {
 
     /**
      * Shutdown the underlying {@link ScheduledThreadPoolExecutor}. Should be invoked when
-     * {@link AmazonHttpClient} is shutdown
+     * {@link AmazonHttpClientImpl} is shutdown
      */
     public synchronized void shutdown() {
         if (executor != null) {

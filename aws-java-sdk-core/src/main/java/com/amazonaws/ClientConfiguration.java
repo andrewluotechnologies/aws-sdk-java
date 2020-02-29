@@ -15,9 +15,7 @@
 package com.amazonaws;
 
 import com.amazonaws.annotation.NotThreadSafe;
-import com.amazonaws.http.IdleConnectionReaper;
-import com.amazonaws.http.SystemPropertyTlsKeyManagersProvider;
-import com.amazonaws.http.TlsKeyManagersProvider;
+import com.amazonaws.http.*;
 import com.amazonaws.retry.PredefinedRetryPolicies;
 import com.amazonaws.retry.RetryMode;
 import com.amazonaws.retry.RetryPolicy;
@@ -371,8 +369,14 @@ public class ClientConfiguration {
     private TlsKeyManagersProvider tlsKeyManagersProvider;
     private RetryMode retryMode;
 
+    /**
+     * Can be used to specify a custom HTTP client factory.
+     */
+    private AmazonHttpClientFactory httpClientFactory;
+
     public ClientConfiguration() {
         apacheHttpClientConfig = new ApacheHttpClientConfig();
+        httpClientFactory = new DefaultAmazonHttpClientFactory();
     }
 
     public ClientConfiguration(ClientConfiguration other) {
@@ -422,6 +426,7 @@ public class ClientConfiguration {
         this.httpsProxyHolder.set(other.httpsProxyHolder.get());
         this.tlsKeyManagersProvider = other.tlsKeyManagersProvider;
         this.retryMode = other.retryMode;
+        this.httpClientFactory = other.httpClientFactory;
     }
 
     /**
@@ -2464,6 +2469,39 @@ public class ClientConfiguration {
         withTlsKeyManagersProvider(tlsKeyManagersProvider);
     }
 
+    /**
+     * @return {@link AmazonHttpClientFactory} that will provide the {@link AmazonHttpClient}s to use when
+     * connecting to AWS
+     * <p>
+     * The default is {@link DefaultAmazonHttpClientFactory}.
+     */
+    public AmazonHttpClientFactory getHttpClientFactory() {
+        return httpClientFactory;
+    }
+
+    /**
+     * Sets {@link AmazonHttpClientFactory} that will provide the {@link AmazonHttpClient}s to use when
+     * connecting to AWS
+     * <p>
+     * The default is {@link DefaultAmazonHttpClientFactory}.
+     */
+    public void setHttpClientFactory(AmazonHttpClientFactory httpClientFactory) {
+        this.httpClientFactory = httpClientFactory;
+    }
+
+    /**
+     * Sets {@link AmazonHttpClientFactory} that will provide the {@link AmazonHttpClient}s to use when
+     * connecting to AWS
+     * <p>
+     * The default used by the client will be {@link DefaultAmazonHttpClientFactory}. Set an instance {@link
+     * com.amazonaws.http.NoneTlsKeyManagersProvider} or another instance of {@link TlsKeyManagersProvider} to override
+     * it.
+     */
+    public ClientConfiguration withHttpClientFactory(AmazonHttpClientFactory httpClientFactory) {
+        setHttpClientFactory(httpClientFactory);
+        return this;
+    }
+
     private URL getHttpProxyEnvironmentVariable() {
         if (getProtocol() == Protocol.HTTP) {
             return getUrlEnvVar(httpProxyHolder, "HTTP_PROXY");
@@ -2488,6 +2526,122 @@ public class ClientConfiguration {
             cache.compareAndSet(null, holder);
         }
         return cache.get().url;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ClientConfiguration that = (ClientConfiguration) o;
+
+        if (maxErrorRetry != that.maxErrorRetry) return false;
+        if (proxyPort != that.proxyPort) return false;
+        if (disableSocketProxy != that.disableSocketProxy) return false;
+        if (preemptiveBasicProxyAuth != that.preemptiveBasicProxyAuth) return false;
+        if (maxConnections != that.maxConnections) return false;
+        if (socketTimeout != that.socketTimeout) return false;
+        if (connectionTimeout != that.connectionTimeout) return false;
+        if (requestTimeout != that.requestTimeout) return false;
+        if (clientExecutionTimeout != that.clientExecutionTimeout) return false;
+        if (throttleRetries != that.throttleRetries) return false;
+        if (socketSendBufferSizeHint != that.socketSendBufferSizeHint) return false;
+        if (socketReceiveBufferSizeHint != that.socketReceiveBufferSizeHint) return false;
+        if (useReaper != that.useReaper) return false;
+        if (useGzip != that.useGzip) return false;
+        if (connectionTTL != that.connectionTTL) return false;
+        if (connectionMaxIdleMillis != that.connectionMaxIdleMillis) return false;
+        if (validateAfterInactivityMillis != that.validateAfterInactivityMillis) return false;
+        if (tcpKeepAlive != that.tcpKeepAlive) return false;
+        if (cacheResponseMetadata != that.cacheResponseMetadata) return false;
+        if (responseMetadataCacheSize != that.responseMetadataCacheSize) return false;
+        if (useExpectContinue != that.useExpectContinue) return false;
+        if (maxConsecutiveRetriesBeforeThrottling != that.maxConsecutiveRetriesBeforeThrottling) return false;
+        if (disableHostPrefixInjection != that.disableHostPrefixInjection) return false;
+        if (userAgentPrefix != null ? !userAgentPrefix.equals(that.userAgentPrefix) : that.userAgentPrefix != null)
+            return false;
+        if (userAgentSuffix != null ? !userAgentSuffix.equals(that.userAgentSuffix) : that.userAgentSuffix != null)
+            return false;
+        if (retryPolicy != null ? !retryPolicy.equals(that.retryPolicy) : that.retryPolicy != null) return false;
+        if (localAddress != null ? !localAddress.equals(that.localAddress) : that.localAddress != null) return false;
+        if (protocol != that.protocol) return false;
+        if (proxyProtocol != that.proxyProtocol) return false;
+        if (proxyHost != null ? !proxyHost.equals(that.proxyHost) : that.proxyHost != null) return false;
+        if (proxyUsername != null ? !proxyUsername.equals(that.proxyUsername) : that.proxyUsername != null)
+            return false;
+        if (proxyPassword != null ? !proxyPassword.equals(that.proxyPassword) : that.proxyPassword != null)
+            return false;
+        if (proxyDomain != null ? !proxyDomain.equals(that.proxyDomain) : that.proxyDomain != null) return false;
+        if (proxyWorkstation != null ? !proxyWorkstation.equals(that.proxyWorkstation) : that.proxyWorkstation != null)
+            return false;
+        if (nonProxyHosts != null ? !nonProxyHosts.equals(that.nonProxyHosts) : that.nonProxyHosts != null)
+            return false;
+        if (proxyAuthenticationMethods != null ? !proxyAuthenticationMethods.equals(that.proxyAuthenticationMethods) : that.proxyAuthenticationMethods != null)
+            return false;
+        if (signerOverride != null ? !signerOverride.equals(that.signerOverride) : that.signerOverride != null)
+            return false;
+        if (dnsResolver != null ? !dnsResolver.equals(that.dnsResolver) : that.dnsResolver != null) return false;
+        if (secureRandom != null ? !secureRandom.equals(that.secureRandom) : that.secureRandom != null) return false;
+        if (headers != null ? !headers.equals(that.headers) : that.headers != null) return false;
+        if (apacheHttpClientConfig != null ? !apacheHttpClientConfig.equals(that.apacheHttpClientConfig) : that.apacheHttpClientConfig != null)
+            return false;
+        if (httpProxyHolder != null ? !httpProxyHolder.equals(that.httpProxyHolder) : that.httpProxyHolder != null)
+            return false;
+        if (httpsProxyHolder != null ? !httpsProxyHolder.equals(that.httpsProxyHolder) : that.httpsProxyHolder != null)
+            return false;
+        if (tlsKeyManagersProvider != null ? !tlsKeyManagersProvider.equals(that.tlsKeyManagersProvider) : that.tlsKeyManagersProvider != null)
+            return false;
+        return httpClientFactory != null ? httpClientFactory.equals(that.httpClientFactory) : that.httpClientFactory == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = userAgentPrefix != null ? userAgentPrefix.hashCode() : 0;
+        result = 31 * result + (userAgentSuffix != null ? userAgentSuffix.hashCode() : 0);
+        result = 31 * result + maxErrorRetry;
+        result = 31 * result + (retryPolicy != null ? retryPolicy.hashCode() : 0);
+        result = 31 * result + (localAddress != null ? localAddress.hashCode() : 0);
+        result = 31 * result + (protocol != null ? protocol.hashCode() : 0);
+        result = 31 * result + (proxyProtocol != null ? proxyProtocol.hashCode() : 0);
+        result = 31 * result + (proxyHost != null ? proxyHost.hashCode() : 0);
+        result = 31 * result + proxyPort;
+        result = 31 * result + (proxyUsername != null ? proxyUsername.hashCode() : 0);
+        result = 31 * result + (proxyPassword != null ? proxyPassword.hashCode() : 0);
+        result = 31 * result + (proxyDomain != null ? proxyDomain.hashCode() : 0);
+        result = 31 * result + (proxyWorkstation != null ? proxyWorkstation.hashCode() : 0);
+        result = 31 * result + (nonProxyHosts != null ? nonProxyHosts.hashCode() : 0);
+        result = 31 * result + (proxyAuthenticationMethods != null ? proxyAuthenticationMethods.hashCode() : 0);
+        result = 31 * result + (disableSocketProxy ? 1 : 0);
+        result = 31 * result + (preemptiveBasicProxyAuth ? 1 : 0);
+        result = 31 * result + maxConnections;
+        result = 31 * result + socketTimeout;
+        result = 31 * result + connectionTimeout;
+        result = 31 * result + requestTimeout;
+        result = 31 * result + clientExecutionTimeout;
+        result = 31 * result + (throttleRetries ? 1 : 0);
+        result = 31 * result + socketSendBufferSizeHint;
+        result = 31 * result + socketReceiveBufferSizeHint;
+        result = 31 * result + (useReaper ? 1 : 0);
+        result = 31 * result + (useGzip ? 1 : 0);
+        result = 31 * result + (signerOverride != null ? signerOverride.hashCode() : 0);
+        result = 31 * result + (int) (connectionTTL ^ (connectionTTL >>> 32));
+        result = 31 * result + (int) (connectionMaxIdleMillis ^ (connectionMaxIdleMillis >>> 32));
+        result = 31 * result + validateAfterInactivityMillis;
+        result = 31 * result + (tcpKeepAlive ? 1 : 0);
+        result = 31 * result + (cacheResponseMetadata ? 1 : 0);
+        result = 31 * result + responseMetadataCacheSize;
+        result = 31 * result + (dnsResolver != null ? dnsResolver.hashCode() : 0);
+        result = 31 * result + (secureRandom != null ? secureRandom.hashCode() : 0);
+        result = 31 * result + (headers != null ? headers.hashCode() : 0);
+        result = 31 * result + (useExpectContinue ? 1 : 0);
+        result = 31 * result + maxConsecutiveRetriesBeforeThrottling;
+        result = 31 * result + (apacheHttpClientConfig != null ? apacheHttpClientConfig.hashCode() : 0);
+        result = 31 * result + (disableHostPrefixInjection ? 1 : 0);
+        result = 31 * result + (httpProxyHolder != null ? httpProxyHolder.hashCode() : 0);
+        result = 31 * result + (httpsProxyHolder != null ? httpsProxyHolder.hashCode() : 0);
+        result = 31 * result + (tlsKeyManagersProvider != null ? tlsKeyManagersProvider.hashCode() : 0);
+        result = 31 * result + (httpClientFactory != null ? httpClientFactory.hashCode() : 0);
+        return result;
     }
 
     static class URLHolder {

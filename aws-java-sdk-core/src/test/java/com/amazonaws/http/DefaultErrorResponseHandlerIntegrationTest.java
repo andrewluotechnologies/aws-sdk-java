@@ -44,7 +44,7 @@ public class DefaultErrorResponseHandlerIntegrationTest extends WireMockTestBase
 
     private static final String RESOURCE = "/some-path";
     private LogCaptor logCaptor = new LogCaptor.DefaultLogCaptor(Level.DEBUG);
-    private final AmazonHttpClient client = new AmazonHttpClient(new ClientConfiguration());
+    private final AmazonHttpClientImpl client = new AmazonHttpClientImpl(new ClientConfiguration());
     private final DefaultErrorResponseHandler sut = new DefaultErrorResponseHandler(new ArrayList<Unmarshaller<AmazonServiceException, Node>>());
 
     @Before

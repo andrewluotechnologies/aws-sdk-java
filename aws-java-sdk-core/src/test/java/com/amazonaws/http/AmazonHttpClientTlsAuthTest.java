@@ -25,12 +25,11 @@ import com.amazonaws.AmazonWebServiceResponse;
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.DefaultRequest;
 import com.amazonaws.Protocol;
-import com.amazonaws.SdkClientException;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import java.io.IOException;
 import java.net.URI;
 import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLHandshakeException;
+
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -42,7 +41,7 @@ import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
 
 /**
- * Tests for the TLS client side auth behavior for {@link AmazonHttpClient}.
+ * Tests for the TLS client side auth behavior for {@link AmazonHttpClientImpl}.
  */
 public class AmazonHttpClientTlsAuthTest extends ClientTlsAuthTestBase {
     private static final String KEY_STORE_PROPERTY = "javax.net.ssl.keyStore";
@@ -50,7 +49,7 @@ public class AmazonHttpClientTlsAuthTest extends ClientTlsAuthTestBase {
     private static final String KEY_STORE_TYPE_PROPERTY = "javax.net.ssl.keyStoreType";
 
     private static WireMockServer wireMockServer;
-    private static AmazonHttpClient httpClient;
+    private static AmazonHttpClientImpl httpClient;
 
     private static TlsKeyManagersProvider provider;
 
@@ -104,7 +103,7 @@ public class AmazonHttpClientTlsAuthTest extends ClientTlsAuthTestBase {
 
     @Test
     public void canMakeHttpsRequestWhenKeyProviderConfigured() throws Exception {
-        httpClient = new AmazonHttpClient(new ClientConfiguration()
+        httpClient = new AmazonHttpClientImpl(new ClientConfiguration()
                 .withTlsKeyManagersProvider(provider));
         makeRequestWithClient(httpClient);
     }
@@ -112,7 +111,7 @@ public class AmazonHttpClientTlsAuthTest extends ClientTlsAuthTestBase {
     @Test
     public void requestFailsWhenNoKeyManagersProvided() throws Throwable {
         thrown.expectCause(IsInstanceOf.<Throwable>instanceOf(SSLException.class));
-        httpClient = new AmazonHttpClient(new ClientConfiguration()
+        httpClient = new AmazonHttpClientImpl(new ClientConfiguration()
                 .withTlsKeyManagersProvider(NoneTlsKeyManagersProvider.getInstance()));
         makeRequestWithClient(httpClient);
     }
@@ -122,7 +121,7 @@ public class AmazonHttpClientTlsAuthTest extends ClientTlsAuthTestBase {
         System.setProperty(KEY_STORE_PROPERTY, clientKeyStore.getAbsolutePath());
         System.setProperty(KEY_STORE_TYPE_PROPERTY, CLIENT_STORE_TYPE);
         System.setProperty(KEY_STORE_PASSWORD_PROPERTY, STORE_PASSWORD);
-        httpClient = new AmazonHttpClient(new ClientConfiguration());
+        httpClient = new AmazonHttpClientImpl(new ClientConfiguration());
         try {
             makeRequestWithClient(httpClient);
         } finally {
@@ -137,7 +136,7 @@ public class AmazonHttpClientTlsAuthTest extends ClientTlsAuthTestBase {
         System.setProperty(KEY_STORE_PROPERTY, clientKeyStore.getAbsolutePath());
         System.setProperty(KEY_STORE_TYPE_PROPERTY, CLIENT_STORE_TYPE);
         System.setProperty(KEY_STORE_PASSWORD_PROPERTY, STORE_PASSWORD);
-        httpClient = new AmazonHttpClient(new ClientConfiguration().withTlsKeyManagersProvider(null));
+        httpClient = new AmazonHttpClientImpl(new ClientConfiguration().withTlsKeyManagersProvider(null));
         try {
             makeRequestWithClient(httpClient);
         } finally {
@@ -158,11 +157,11 @@ public class AmazonHttpClientTlsAuthTest extends ClientTlsAuthTestBase {
                 .withProxyPort(wireMockServer.httpsPort())
                 .withProxyProtocol(Protocol.HTTPS)
                 .withTlsKeyManagersProvider(provider);
-        httpClient = new AmazonHttpClient(config);
+        httpClient = new AmazonHttpClientImpl(config);
         makeRequestWithClient(httpClient);
     }
 
-    private void makeRequestWithClient(AmazonHttpClient client) throws Exception {
+    private void makeRequestWithClient(AmazonHttpClientImpl client) throws Exception {
         DefaultRequest<Void> request = new DefaultRequest<Void>(null, "service");
         request.setEndpoint(URI.create("https://localhost:" + wireMockServer.httpsPort()));
         ExecutionContext executionContext = new ExecutionContext();

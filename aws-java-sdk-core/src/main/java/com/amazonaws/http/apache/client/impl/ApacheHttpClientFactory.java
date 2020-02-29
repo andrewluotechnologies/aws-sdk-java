@@ -14,7 +14,7 @@
  */
 package com.amazonaws.http.apache.client.impl;
 
-import com.amazonaws.http.AmazonHttpClient;
+import com.amazonaws.http.AmazonHttpClientImpl;
 import com.amazonaws.http.IdleConnectionReaper;
 import com.amazonaws.http.apache.SdkProxyRoutePlanner;
 import com.amazonaws.http.apache.utils.ApacheUtils;
@@ -37,7 +37,7 @@ import org.apache.http.impl.client.HttpClients;
  */
 public class ApacheHttpClientFactory implements HttpClientFactory<ConnectionManagerAwareHttpClient> {
 
-    private static final Log LOG = LogFactory.getLog(AmazonHttpClient.class);
+    private static final Log LOG = LogFactory.getLog(AmazonHttpClientImpl.class);
     private final ConnectionManagerFactory<HttpClientConnectionManager>
             cmFactory = new ApacheConnectionManagerFactory();
 

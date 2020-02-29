@@ -15,7 +15,7 @@
 package com.amazonaws.http.apache.client.impl;
 
 import com.amazonaws.SDKGlobalConfiguration;
-import com.amazonaws.http.AmazonHttpClient;
+import com.amazonaws.http.AmazonHttpClientImpl;
 import com.amazonaws.http.DelegatingDnsResolver;
 import com.amazonaws.http.SystemPropertyTlsKeyManagersProvider;
 import com.amazonaws.http.TlsKeyManagersProvider;
@@ -59,7 +59,7 @@ import java.util.concurrent.TimeUnit;
 public class ApacheConnectionManagerFactory implements
         ConnectionManagerFactory<HttpClientConnectionManager> {
 
-    private final Log LOG = LogFactory.getLog(AmazonHttpClient.class);
+    private final Log LOG = LogFactory.getLog(AmazonHttpClientImpl.class);
 
     @Override
     public HttpClientConnectionManager create(final HttpClientSettings settings) {

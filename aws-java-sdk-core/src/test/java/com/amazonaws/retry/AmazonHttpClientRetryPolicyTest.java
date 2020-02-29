@@ -29,12 +29,12 @@ import org.junit.Test;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.Request;
-import com.amazonaws.http.AmazonHttpClient;
+import com.amazonaws.http.AmazonHttpClientImpl;
 import com.amazonaws.http.ExecutionContext;
 import com.amazonaws.util.AWSRequestMetrics;
 
 /**
- * Tests that {@link AmazonHttpClient#executeHelper()} method passes the correct
+ * Tests that {@link AmazonHttpClientImpl#executeHelper()} method passes the correct
  * context information into the configured RetryPolicy.
  */
 public class AmazonHttpClientRetryPolicyTest extends RetryPolicyTestBase {
@@ -42,7 +42,7 @@ public class AmazonHttpClientRetryPolicyTest extends RetryPolicyTestBase {
     private static final int EXPECTED_RETRY_COUNT = 5;
     private static final int EXPECTED_SHOULD_RETRY_CALL_COUNT = EXPECTED_RETRY_COUNT + 1;
     private static final Random random = new Random();
-    private AmazonHttpClient testedClient;
+    private AmazonHttpClientImpl testedClient;
 
     /** Reset the RetryPolicy and restart collecting context data */
     @Before
@@ -55,7 +55,7 @@ public class AmazonHttpClientRetryPolicyTest extends RetryPolicyTestBase {
                                 backoffStrategy,
                                 EXPECTED_RETRY_COUNT, // max error retry
                                 false));              // ignore the maxErrorRetry in ClientConfiguration level
-        testedClient = new AmazonHttpClient(clientConfiguration);
+        testedClient = new AmazonHttpClientImpl(clientConfiguration);
     }
     
     /**

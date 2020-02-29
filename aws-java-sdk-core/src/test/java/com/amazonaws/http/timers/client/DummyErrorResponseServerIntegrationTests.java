@@ -26,13 +26,12 @@ import org.junit.Test;
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.TestPreConditions;
 import com.amazonaws.handlers.RequestHandler2;
-import com.amazonaws.http.AmazonHttpClient;
+import com.amazonaws.http.AmazonHttpClientImpl;
 import com.amazonaws.http.ExecutionContext;
 import com.amazonaws.http.MockServerTestBase;
 import com.amazonaws.http.request.RequestHandlerTestUtils;
 import com.amazonaws.http.request.SlowRequestHandler;
 import com.amazonaws.http.response.NullErrorResponseHandler;
-import com.amazonaws.http.response.NullResponseHandler;
 import com.amazonaws.http.response.UnresponsiveErrorResponseHandler;
 import com.amazonaws.http.server.MockServer;
 
@@ -42,7 +41,7 @@ import com.amazonaws.http.server.MockServer;
 public class DummyErrorResponseServerIntegrationTests extends MockServerTestBase {
 
     private static final int STATUS_CODE = 500;
-    private AmazonHttpClient httpClient;
+    private AmazonHttpClientImpl httpClient;
 
     @BeforeClass
     public static void preConditions() {
@@ -58,7 +57,7 @@ public class DummyErrorResponseServerIntegrationTests extends MockServerTestBase
     @Test(timeout = TEST_TIMEOUT, expected = ClientExecutionTimeoutException.class)
     public void clientExecutionTimeoutEnabled_SlowErrorResponseHandler_ThrowsClientExecutionTimeoutException()
             throws Exception {
-        httpClient = new AmazonHttpClient(
+        httpClient = new AmazonHttpClientImpl(
                 new ClientConfiguration().withClientExecutionTimeout(CLIENT_EXECUTION_TIMEOUT));
 
         httpClient.requestExecutionBuilder().request(newGetRequest()).errorResponseHandler(new UnresponsiveErrorResponseHandler()).execute();
@@ -67,7 +66,7 @@ public class DummyErrorResponseServerIntegrationTests extends MockServerTestBase
     @Test(timeout = TEST_TIMEOUT, expected = ClientExecutionTimeoutException.class)
     public void clientExecutionTimeoutEnabled_SlowAfterErrorRequestHandler_ThrowsClientExecutionTimeoutException()
             throws Exception {
-        httpClient = new AmazonHttpClient(
+        httpClient = new AmazonHttpClientImpl(
                 new ClientConfiguration().withClientExecutionTimeout(CLIENT_EXECUTION_TIMEOUT));
 
         List<RequestHandler2> requestHandlers = RequestHandlerTestUtils.buildRequestHandlerList(

@@ -18,6 +18,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import com.amazonaws.http.AmazonHttpClientImpl;
 import org.apache.http.client.methods.HttpRequestBase;
 
 import com.amazonaws.annotation.SdkInternalApi;
@@ -77,7 +78,7 @@ public class HttpRequestTimer {
 
     /**
      * Shutdown the underlying {@link ScheduledThreadPoolExecutor}. Should be invoked when
-     * {@link com.amazonaws.http.AmazonHttpClient} is shutdown
+     * {@link AmazonHttpClientImpl} is shutdown
      */
     public synchronized void shutdown() {
         if (executor != null) {

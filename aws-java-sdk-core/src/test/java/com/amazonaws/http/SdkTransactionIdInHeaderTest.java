@@ -14,7 +14,7 @@
  */
 package com.amazonaws.http;
 
-import static com.amazonaws.http.AmazonHttpClient.HEADER_SDK_TRANSACTION_ID;
+import static com.amazonaws.http.AmazonHttpClientImpl.HEADER_SDK_TRANSACTION_ID;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.findAll;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -59,7 +59,7 @@ public class SdkTransactionIdInHeaderTest extends WireMockTestBase {
     }
 
     private void executeRequest() throws Exception {
-        AmazonHttpClient httpClient = new AmazonHttpClient(new ClientConfiguration());
+        AmazonHttpClientImpl httpClient = new AmazonHttpClientImpl(new ClientConfiguration());
         try {
             httpClient.requestExecutionBuilder().request(newGetRequest(RESOURCE_PATH)).errorResponseHandler(stubErrorHandler()).execute();
             fail("Expected exception");

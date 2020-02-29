@@ -32,7 +32,7 @@ import static org.junit.Assert.*;
 
 public class DelegatingDnsResolverTest {
 
-    private AmazonHttpClient testedClient;
+    private AmazonHttpClientImpl testedClient;
     private AtomicInteger dnsResolutionCounter;
     private Set<String> requestedHosts;
 
@@ -53,7 +53,7 @@ public class DelegatingDnsResolverTest {
             }
         });
 
-        testedClient = new AmazonHttpClient(clientConfiguration);
+        testedClient = new AmazonHttpClientImpl(clientConfiguration);
     }
 
     @After

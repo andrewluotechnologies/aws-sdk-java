@@ -47,7 +47,7 @@ import com.amazonaws.AmazonWebServiceRequest;
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.DefaultRequest;
 import com.amazonaws.Request;
-import com.amazonaws.http.AmazonHttpClient;
+import com.amazonaws.http.AmazonHttpClientImpl;
 import com.amazonaws.http.HttpResponseHandler;
 import com.amazonaws.util.StringInputStream;
 
@@ -65,9 +65,9 @@ public class RetryPolicyTestBase {
     protected static ContextDataCollectionRetryCondition retryCondition;
     protected static ContextDataCollectionBackoffStrategy backoffStrategy;
     
-    public static void injectMockHttpClient(AmazonHttpClient amazonHttpClient, ConnectionManagerAwareHttpClient mockHttpClient) {
+    public static void injectMockHttpClient(AmazonHttpClientImpl amazonHttpClient, ConnectionManagerAwareHttpClient mockHttpClient) {
         try {
-            Field f = AmazonHttpClient.class.getDeclaredField("httpClient");
+            Field f = AmazonHttpClientImpl.class.getDeclaredField("httpClient");
             f.setAccessible(true);
             f.set(amazonHttpClient, mockHttpClient);
         } catch (Exception e) {

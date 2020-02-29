@@ -18,7 +18,7 @@ package com.amazonaws.http.timers.client;
 import com.amazonaws.AbortedException;
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.TestPreConditions;
-import com.amazonaws.http.AmazonHttpClient;
+import com.amazonaws.http.AmazonHttpClientImpl;
 import com.amazonaws.http.HttpMethodName;
 import com.amazonaws.http.MockServerTestBase;
 import com.amazonaws.http.apache.client.impl.ConnectionManagerAwareHttpClient;
@@ -50,7 +50,7 @@ import static org.mockito.Mockito.doThrow;
 public class AbortedExceptionClientExecutionTimerIntegrationTest extends
         MockServerTestBase {
 
-    private AmazonHttpClient httpClient;
+    private AmazonHttpClientImpl httpClient;
 
     @BeforeClass
     public static void preConditions() {
@@ -77,7 +77,7 @@ public class AbortedExceptionClientExecutionTimerIntegrationTest extends
         doThrow(new AbortedException()).when(rawHttpClient).execute(any
                 (HttpRequestBase.class), any(HttpContext.class));
 
-        httpClient = new AmazonHttpClient(config, rawHttpClient, null);
+        httpClient = new AmazonHttpClientImpl(config, rawHttpClient, null);
 
         execute(httpClient, createMockGetRequest());
     }
@@ -92,7 +92,7 @@ public class AbortedExceptionClientExecutionTimerIntegrationTest extends
         ConnectionManagerAwareHttpClient rawHttpClient =
                 createRawHttpClientSpy(config);
 
-        httpClient = new AmazonHttpClient(config, rawHttpClient, null);
+        httpClient = new AmazonHttpClientImpl(config, rawHttpClient, null);
 
         execute(httpClient, new EmptyHttpRequest(server.getEndpoint(),
                 HttpMethodName.PUT, new SdkBufferedInputStream(new InputStream() {

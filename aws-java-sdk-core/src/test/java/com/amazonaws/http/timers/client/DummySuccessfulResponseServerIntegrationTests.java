@@ -18,7 +18,7 @@ import com.amazonaws.AmazonClientException;
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.TestPreConditions;
 import com.amazonaws.handlers.RequestHandler2;
-import com.amazonaws.http.AmazonHttpClient;
+import com.amazonaws.http.AmazonHttpClientImpl;
 import com.amazonaws.http.ExecutionContext;
 import com.amazonaws.http.MockServerTestBase;
 import com.amazonaws.http.apache.client.impl.ApacheHttpClientFactory;
@@ -50,7 +50,7 @@ public class DummySuccessfulResponseServerIntegrationTests extends MockServerTes
 
     private static final int STATUS_CODE = 200;
 
-    private AmazonHttpClient httpClient;
+    private AmazonHttpClientImpl httpClient;
 
     @BeforeClass
     public static void preConditions() {
@@ -65,7 +65,7 @@ public class DummySuccessfulResponseServerIntegrationTests extends MockServerTes
     @Test(timeout = TEST_TIMEOUT, expected = ClientExecutionTimeoutException.class)
     public void clientExecutionTimeoutEnabled_SlowResponseHandler_ThrowsClientExecutionTimeoutException()
             throws Exception {
-        httpClient = new AmazonHttpClient(
+        httpClient = new AmazonHttpClientImpl(
                 new ClientConfiguration().withClientExecutionTimeout(CLIENT_EXECUTION_TIMEOUT));
 
         requestBuilder().execute(new UnresponsiveResponseHandler());
@@ -74,7 +74,7 @@ public class DummySuccessfulResponseServerIntegrationTests extends MockServerTes
     @Test(timeout = TEST_TIMEOUT, expected = ClientExecutionTimeoutException.class)
     public void clientExecutionTimeoutEnabled_SlowAfterResponseRequestHandler_ThrowsClientExecutionTimeoutException()
             throws Exception {
-        httpClient = new AmazonHttpClient(
+        httpClient = new AmazonHttpClientImpl(
                 new ClientConfiguration().withClientExecutionTimeout(CLIENT_EXECUTION_TIMEOUT));
 
         List<RequestHandler2> requestHandlers = RequestHandlerTestUtils.buildRequestHandlerList(
@@ -86,7 +86,7 @@ public class DummySuccessfulResponseServerIntegrationTests extends MockServerTes
     @Test(timeout = TEST_TIMEOUT, expected = ClientExecutionTimeoutException.class)
     public void clientExecutionTimeoutEnabled_SlowBeforeRequestRequestHandler_ThrowsClientExecutionTimeoutException()
             throws Exception {
-        httpClient = new AmazonHttpClient(
+        httpClient = new AmazonHttpClientImpl(
                 new ClientConfiguration().withClientExecutionTimeout(CLIENT_EXECUTION_TIMEOUT));
 
         List<RequestHandler2> requestHandlers = RequestHandlerTestUtils.buildRequestHandlerList(
@@ -106,7 +106,7 @@ public class DummySuccessfulResponseServerIntegrationTests extends MockServerTes
         ClientConfiguration config = new ClientConfiguration();
         ConnectionManagerAwareHttpClient rawHttpClient = new ApacheHttpClientFactory().create(HttpClientSettings.adapt(config));
 
-        httpClient = new AmazonHttpClient(config, rawHttpClient, null);
+        httpClient = new AmazonHttpClientImpl(config, rawHttpClient, null);
 
         interruptCurrentThreadAfterDelay(1000);
         List<RequestHandler2> requestHandlers = RequestHandlerTestUtils
@@ -123,7 +123,7 @@ public class DummySuccessfulResponseServerIntegrationTests extends MockServerTes
         assertEquals(0, leasedConnections);
     }
 
-    private AmazonHttpClient.RequestExecutionBuilder requestBuilder() { return httpClient.requestExecutionBuilder().request(newGetRequest()); }
+    private AmazonHttpClientImpl.RequestExecutionBuilder requestBuilder() { return httpClient.requestExecutionBuilder().request(newGetRequest()); }
 
     private ExecutionContext withHandlers(List<RequestHandler2> requestHandlers) {
         return ExecutionContext.builder().withRequestHandler2s(requestHandlers).build();

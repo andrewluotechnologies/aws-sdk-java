@@ -38,7 +38,7 @@ public class AmazonHttpClientIntegrationTest extends WireMockTestBase {
     public void headersSpecifiedInClientConfigurationArePutOnRequest() throws Exception {
         Request<?> request = newGetRequest(OPERATION);
 
-        AmazonHttpClient sut = createClient(HEADER, CONFIG_HEADER_VALUE);
+        AmazonHttpClientImpl sut = createClient(HEADER, CONFIG_HEADER_VALUE);
         sut.requestExecutionBuilder().request(request).execute();
 
         verify(getRequestedFor(urlPathEqualTo(OPERATION)).withHeader(HEADER, matching(CONFIG_HEADER_VALUE)));
@@ -49,7 +49,7 @@ public class AmazonHttpClientIntegrationTest extends WireMockTestBase {
         Request<?> request = newGetRequest(OPERATION);
         request.getOriginalRequest().putCustomRequestHeader(HEADER, REQUEST_HEADER_VALUE);
 
-        AmazonHttpClient sut = createClient(HEADER, CONFIG_HEADER_VALUE);
+        AmazonHttpClientImpl sut = createClient(HEADER, CONFIG_HEADER_VALUE);
 
         sut.requestExecutionBuilder().request(request).execute();
 
@@ -61,14 +61,14 @@ public class AmazonHttpClientIntegrationTest extends WireMockTestBase {
         Request<?> request = newRequest(OPERATION);
         request.setHttpMethod(HttpMethodName.OPTIONS);
 
-        AmazonHttpClient sut = new AmazonHttpClient(new ClientConfiguration());
+        AmazonHttpClientImpl sut = new AmazonHttpClientImpl(new ClientConfiguration());
         sut.requestExecutionBuilder().request(request).execute();
 
         verify(optionsRequestedFor(urlPathEqualTo(OPERATION)));
     }
 
-    private AmazonHttpClient createClient(String headerName, String headerValue) {
+    private AmazonHttpClientImpl createClient(String headerName, String headerValue) {
         ClientConfiguration clientConfiguration = new ClientConfiguration().withHeader(headerName, headerValue);
-        return new AmazonHttpClient(clientConfiguration);
+        return new AmazonHttpClientImpl(clientConfiguration);
     }
 }

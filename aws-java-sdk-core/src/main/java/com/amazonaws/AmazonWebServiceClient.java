@@ -28,7 +28,7 @@ import com.amazonaws.client.AwsSyncClientParams;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.handlers.RequestHandler;
 import com.amazonaws.handlers.RequestHandler2;
-import com.amazonaws.http.AmazonHttpClient;
+import com.amazonaws.http.AmazonHttpClientImpl;
 import com.amazonaws.http.ExecutionContext;
 import com.amazonaws.internal.DefaultServiceEndpointBuilder;
 import com.amazonaws.internal.auth.DefaultSignerProvider;
@@ -125,7 +125,7 @@ public abstract class AmazonWebServiceClient {
     protected ClientConfiguration clientConfiguration;
 
     /** Low level client for sending requests to AWS services. */
-    protected AmazonHttpClient client;
+    protected AmazonHttpClientImpl client;
 
     /** Optional request handlers for additional request processing. */
     protected final List<RequestHandler2> requestHandler2s;
@@ -233,10 +233,10 @@ public abstract class AmazonWebServiceClient {
         useStrictHostNameVerification = useStrictHostNameVerification != null ? useStrictHostNameVerification
                                                                               : useStrictHostNameVerification();
 
-        this.client = new AmazonHttpClient(clientConfiguration,
-                                           clientParams.getRequestMetricCollector(),
-                                           !useStrictHostNameVerification,
-                                           calculateCRC32FromCompressedData());
+        this.client = (AmazonHttpClientImpl)clientConfiguration.getHttpClientFactory().create(clientConfiguration,
+                                                                                              clientParams.getRequestMetricCollector(),
+                                                                                              !useStrictHostNameVerification,
+                                                                                              calculateCRC32FromCompressedData());
         this.csmConfiguration = getCsmConfiguration(clientParams.getClientSideMonitoringConfigurationProvider());
 
         if (isCsmEnabled()) {

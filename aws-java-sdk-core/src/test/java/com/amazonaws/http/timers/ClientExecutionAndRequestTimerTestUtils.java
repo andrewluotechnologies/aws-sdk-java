@@ -47,14 +47,12 @@ import org.apache.http.protocol.HttpContext;
 
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.Request;
-import com.amazonaws.http.AmazonHttpClient;
-import com.amazonaws.http.ExecutionContext;
+import com.amazonaws.http.AmazonHttpClientImpl;
 import com.amazonaws.http.client.HttpClientFactory;
 import com.amazonaws.http.HttpMethodName;
 import com.amazonaws.http.request.EmptyHttpRequest;
 import com.amazonaws.http.response.HttpResponseProxy;
 import com.amazonaws.http.response.NullErrorResponseHandler;
-import com.amazonaws.http.response.NullResponseHandler;
 import com.amazonaws.http.timers.client.ClientExecutionTimer;
 import com.amazonaws.http.timers.request.HttpRequestTimer;
 
@@ -216,7 +214,7 @@ public class ClientExecutionAndRequestTimerTestUtils {
     /**
      * Execute the request with a dummy response handler and error response handler
      */
-    public static void execute(AmazonHttpClient httpClient, Request<?> request) {
+    public static void execute(AmazonHttpClientImpl httpClient, Request<?> request) {
         httpClient.requestExecutionBuilder()
                 .request(request)
                 .errorResponseHandler(new NullErrorResponseHandler())

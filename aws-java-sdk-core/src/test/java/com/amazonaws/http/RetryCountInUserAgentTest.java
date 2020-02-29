@@ -14,7 +14,7 @@
  */
 package com.amazonaws.http;
 
-import static com.amazonaws.http.AmazonHttpClient.HEADER_SDK_RETRY_INFO;
+import static com.amazonaws.http.AmazonHttpClientImpl.HEADER_SDK_RETRY_INFO;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -68,7 +68,7 @@ public class RetryCountInUserAgentTest extends WireMockTestBase {
     }
 
     private void executeRequest() throws Exception {
-        AmazonHttpClient httpClient = new AmazonHttpClient(
+        AmazonHttpClientImpl httpClient = new AmazonHttpClientImpl(
                 new ClientConfiguration().withRetryPolicy(buildRetryPolicy())
                 .withThrottledRetries(true));
         try {

@@ -24,7 +24,7 @@ import com.amazonaws.annotation.SdkProtectedApi;
 import com.amazonaws.annotation.ThreadSafe;
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.handlers.RequestHandler2;
-import com.amazonaws.http.AmazonHttpClient;
+import com.amazonaws.http.AmazonHttpClientImpl;
 import com.amazonaws.http.ExecutionContext;
 import com.amazonaws.http.HttpResponseHandler;
 import com.amazonaws.internal.auth.SignerProvider;
@@ -49,7 +49,7 @@ public class ClientHandlerImpl extends ClientHandler {
     private final URI endpoint;
     private final List<RequestHandler2> requestHandler2s;
     private final RequestMetricCollector clientLevelMetricCollector;
-    private final AmazonHttpClient client;
+    private final AmazonHttpClientImpl client;
 
     public ClientHandlerImpl(ClientHandlerParams handlerParams) {
         this.signerProvider = handlerParams.getClientParams().getSignerProvider();
@@ -60,9 +60,9 @@ public class ClientHandlerImpl extends ClientHandler {
         this.client = buildHttpClient(handlerParams);
     }
 
-    private AmazonHttpClient buildHttpClient(ClientHandlerParams handlerParams) {
+    private AmazonHttpClientImpl buildHttpClient(ClientHandlerParams handlerParams) {
         final AwsSyncClientParams clientParams = handlerParams.getClientParams();
-        return AmazonHttpClient.builder()
+        return AmazonHttpClientImpl.builder()
                 .clientConfiguration(clientParams.getClientConfiguration())
                 .retryPolicy(clientParams.getRetryPolicy())
                 .requestMetricCollector(clientParams.getRequestMetricCollector())

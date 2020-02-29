@@ -17,7 +17,7 @@ package com.amazonaws.http.timers.request;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.TestPreConditions;
-import com.amazonaws.http.AmazonHttpClient;
+import com.amazonaws.http.AmazonHttpClientImpl;
 import com.amazonaws.http.OverloadedMockServerTestBase;
 import com.amazonaws.http.apache.client.impl.ApacheHttpClientFactory;
 import com.amazonaws.http.apache.client.impl.ConnectionManagerAwareHttpClient;
@@ -46,7 +46,7 @@ import static org.mockito.Mockito.spy;
  */
 public class OverloadedServerIntegrationTests extends OverloadedMockServerTestBase {
 
-    private AmazonHttpClient httpClient;
+    private AmazonHttpClientImpl httpClient;
 
     @BeforeClass
     public static void preConditions() {
@@ -66,7 +66,7 @@ public class OverloadedServerIntegrationTests extends OverloadedMockServerTestBa
         HttpClientFactory<ConnectionManagerAwareHttpClient> httpClientFactory = new ApacheHttpClientFactory();
         ConnectionManagerAwareHttpClient rawHttpClient = spy(httpClientFactory.create(HttpClientSettings.adapt(config)));
 
-        httpClient = new AmazonHttpClient(config, rawHttpClient, null);
+        httpClient = new AmazonHttpClientImpl(config, rawHttpClient, null);
 
         try {
             execute(httpClient, newGetRequest());

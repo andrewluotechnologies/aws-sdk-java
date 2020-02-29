@@ -34,7 +34,7 @@ import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import static com.amazonaws.http.AmazonHttpClient.HEADER_SDK_TRANSACTION_ID;
+import static com.amazonaws.http.AmazonHttpClientImpl.HEADER_SDK_TRANSACTION_ID;
 
 /**
  * Implementation of HttpResponseHandler that handles only error responses from Amazon Web Services.

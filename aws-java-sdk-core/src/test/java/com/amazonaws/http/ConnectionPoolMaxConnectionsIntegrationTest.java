@@ -49,7 +49,7 @@ public class ConnectionPoolMaxConnectionsIntegrationTest {
 
         String localhostEndpoint = "http://localhost:" + server.getPort();
 
-        AmazonHttpClient httpClient = new AmazonHttpClient(
+        AmazonHttpClientImpl httpClient = new AmazonHttpClientImpl(
                 new ClientConfiguration()
                         .withMaxConnections(1)
                         .withConnectionTimeout(100)

@@ -77,7 +77,7 @@ public class AmazonHttpClientClockSkewErrorTest extends WireMockTestBase {
     }
 
     private void executeRequest(ClientConfiguration clientConfiguration) throws Exception {
-        AmazonHttpClient httpClient = new AmazonHttpClient(clientConfiguration);
+        AmazonHttpClientImpl httpClient = new AmazonHttpClientImpl(clientConfiguration);
         try {
             httpClient.requestExecutionBuilder().request(newGetRequest(RESOURCE_PATH))
                     .errorResponseHandler(stubErrorHandler())

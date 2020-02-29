@@ -18,7 +18,7 @@ import com.amazonaws.AmazonWebServiceRequest;
 import com.amazonaws.AmazonWebServiceResponse;
 import com.amazonaws.AmazonWebServiceResult;
 import com.amazonaws.Request;
-import com.amazonaws.http.AmazonHttpClient;
+import com.amazonaws.http.AmazonHttpClientImpl;
 import com.amazonaws.http.HttpResponse;
 import com.amazonaws.http.HttpResponseHandler;
 import com.amazonaws.http.SdkHttpMetadata;
@@ -42,7 +42,7 @@ public class AwsResponseHandlerAdapter<T> implements HttpResponseHandler<T> {
      */
     private static final Log requestIdLog = LogFactory.getLog("com.amazonaws.requestId");
 
-    private static final Log requestLog = AmazonHttpClient.requestLog;
+    private static final Log requestLog = AmazonHttpClientImpl.requestLog;
 
     private final HttpResponseHandler<AmazonWebServiceResponse<T>> delegate;
     private final Request<?> request;

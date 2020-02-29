@@ -65,7 +65,7 @@ public class AmazonHttpClientTest {
     private final String URI_NAME = "http://testsvc.region.amazonaws.com";
 
     private ConnectionManagerAwareHttpClient httpClient;
-    private AmazonHttpClient client;
+    private AmazonHttpClientImpl client;
 
     private RequestHandler2 mockHandler;
     private List<RequestHandler2> requestHandlers = new ArrayList<RequestHandler2>();
@@ -77,7 +77,7 @@ public class AmazonHttpClientTest {
         httpClient = EasyMock.createMock(ConnectionManagerAwareHttpClient.class);
         EasyMock.replay(httpClient);
 
-        client = new AmazonHttpClient(config, httpClient, null);
+        client = new AmazonHttpClientImpl(config, httpClient, null);
 
         mockHandler = EasyMock.createStrictMock(RequestHandler2.class);
 
@@ -248,7 +248,7 @@ public class AmazonHttpClientTest {
                 .once();
         EasyMock.replay(httpClient);
 
-        AmazonHttpClient client = new AmazonHttpClient(config, httpClient, null);
+        AmazonHttpClientImpl client = new AmazonHttpClientImpl(config, httpClient, null);
 
         client.requestExecutionBuilder().request(request).execute(handler);
 
@@ -266,7 +266,7 @@ public class AmazonHttpClientTest {
                 .once();
         EasyMock.replay(httpClient);
 
-        AmazonHttpClient client = new AmazonHttpClient(new ClientConfiguration(), httpClient, null);
+        AmazonHttpClientImpl client = new AmazonHttpClientImpl(new ClientConfiguration(), httpClient, null);
 
         final BasicAWSCredentials credentials = new BasicAWSCredentials("foo", "bar");
 
